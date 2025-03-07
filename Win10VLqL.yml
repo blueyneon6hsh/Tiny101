@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   windows:
     image: dockurr/windows
@@ -6,9 +7,9 @@ services:
       VERSION: "10"
       USERNAME: "Zuzzyyuu"
       PASSWORD: "VlqL123"
-      RAM_SIZE: "11G"
-      CPU_CORES: "5"
-      DISK_SIZE: "19G"
+      RAM_SIZE: "4G"
+      CPU_CORES: "4"
+      DISK_SIZE: "15"
     devices:
       - /dev/kvm
       - /dev/net/tun
@@ -19,5 +20,13 @@ services:
       - 3389:3389/tcp
       - 3389:3389/udp
     stop_grace_period: 2m
-    volumes:
-      - ./tiny10.iso:/iso/windows.iso  # Mounts the downloaded Tiny10 ISO into the container
+    networks:
+      mynet:
+        ipv4_address: 172.20.0.2  # Static IP for the container
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
