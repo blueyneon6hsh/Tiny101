@@ -1,12 +1,15 @@
-
-    devices:
-      - /dev/kvm
-      - /dev/net/tun
-    cap_add:
-      - NET_ADMIN
+version: '3.8'
+services:
+  windows-vm:
+    image: qemu:latest  # Replace with your QEMU or custom image
+    command: qemu-system-x86_64 -m 2048 -smp 2 -boot order=c -drive file=win.iso,media=cdrom -drive file=win.img,format=raw -device usb-ehci,id=usb,bus=pci.0,addr=0x4 -device usb-tablet -vnc :0 -device e1000,netdev=n0 -netdev user,id=n0 -vga qxl
     ports:
-      - 8006:8006
-      - 3389:3389/tcp
-      - 3389:3389/udp
-    stop_grace_period: 2m
-  
+      - "8006:8006"      # Forward port 8006 (TCP assumed)
+      - "3389:3389/tcp"  # Forward RDP port 3389 TCP
+      - "3389:3389/udp"  # Forward RDP port 3389 UDP
+    volumes:
+      - ./win.iso:/win.iso
+      - ./win.img:/win.img
+    cap_add:
+      - NET_ADMIN      # Required for networking
+    privileged: true   # May be needed for QEMU
